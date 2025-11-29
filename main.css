@@ -1,0 +1,14 @@
+body {
+    background-color: #151510;
+    color: #eee;
+}
+
+canvas {
+    color: inherit;
+    border: 1px solid;
+    display: block;
+    margin-inline: auto;
+    width: 100%;
+    max-width: 800px;
+    margin-top: 40px;
+}

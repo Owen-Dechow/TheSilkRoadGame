@@ -3,20 +3,11 @@
 import { GameScreen } from "./gameScreen.js";
 import { Character } from "./characters.js";
 import { awaitResourceLoad, getImage, waitForKeyClick } from "./utils.js";
-import { Map, City } from "./map.js";
+import { Map, City, constantinople, cairo, baghdad, tehran, bukhara, samarkand, delhi, beijing, shanghai } from "./map.js";
+import { silk, porcelain, tea, pepper, cardamom, cinnamon, wine, oliveoil, glassware, silver, gold, rice, wheat, driedfruit, driedmeat, cheese, honey } from "./goods.js";
 
 const font = new FontFace("MyFont", "url(https://fonts.gstatic.com/s/eaglelake/v26/ptRMTiqbbuNJDOiKj9wG1On4KA.woff2)");
 const scroll = getImage("./scroll.webp");
-
-const constantinople = new City("Constantinople", 0.215, 0.373);
-const cairo = new City("Cairo", 0.230, 0.472);
-const baghdad = new City("Baghdad", 0.299, 0.437);
-const tehran = new City("Tehran", 0.340, 0.420);
-const bukhara = new City("Bukhara", 0.440, 0.420);
-const samarkand = new City("Samarkand", 0.455, 0.420);
-const delhi = new City("Delhi", 0.500, 0.499);
-const beijing = new City("Beijing", 0.698, 0.370);
-const shanghai = new City("Shanghai", 0.738, 0.431);
 
 const map = new Map("The Silk Road", getImage("./map.webp"), [
     constantinople,
@@ -33,7 +24,7 @@ const map = new Map("The Silk Road", getImage("./map.webp"), [
 export const characters = [
     new Character(
         "Indian Spice Dealer",
-        ["pepper", "cardamom", "cinnamon"],
+        [pepper, cardamom, cinnamon],
         "Spices were worth their weight in silver, highly prized for food and medicine.",
         [delhi, tehran, baghdad],
         1451,
@@ -42,16 +33,16 @@ export const characters = [
     ),
     new Character(
         "Chinese Silk Trader",
-        ["fine silk", "porcelain", "tea"],
+        [silk, porcelain, tea],
         "Silk was the prestige commodity of the Silk Road, treasured by nobles and emperors.",
-        [beijing, bukhara, samarkand],
+        [shanghai, beijing, bukhara, samarkand],
         1924,
         "Very long journey across deserts and mountains from China into Central Asia.",
         "Once tried to hide bolts of silk under his robe, but the camel coughed and revealed the stash to everyone at the caravanserai."
     ),
     new Character(
         "Byzantine Merchant",
-        ["glassware", "wine", "olive oil"],
+        [glassware, wine, oliveoil],
         "Useful everyday goods, but less rare than silk or spices, so profits were steadier but smaller.",
         [constantinople, baghdad, cairo],
         1125,
@@ -103,7 +94,7 @@ async function playGame(gs) {
     character.name = await gs.getTextInput("What is your name?", 20);
     gs.clearBackground();
 
-    await showMap(gs, map.cities[1]);
+    await showMap(gs, character.stops);
 }
 
 /**
@@ -197,14 +188,14 @@ async function loadAssets() {
 
 /**
  * @param {GameScreen} gs
- * @param {City} [dest]
+ * @param {City | City[]} [highlight]
  */
-async function showMap(gs, dest) {
+async function showMap(gs, highlight) {
     const blinkRate = .01;
 
     const render = () => {
         const t = Date.now();
-        map.draw(gs, Math.sin(t * blinkRate) >= 0 ? dest : undefined);
+        map.draw(gs, Math.sin(t * blinkRate) >= 0 ? highlight : undefined);
         gs.drawDialogSubNote("Press enter to continue.");
     };
 

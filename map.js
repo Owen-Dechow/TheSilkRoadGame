@@ -21,22 +21,32 @@ export class Map {
 
     /**
      * @param {GameScreen} gs
-     * @param {City} [dest]
+     * @param {City[] | City} [highlight]
      */
-    draw(gs, dest) {
+    draw(gs, highlight) {
         gs.drawDialogBox(this.img);
         gs.drawDialogTitle(this.title);
-        if (!dest) return;
+        if (!highlight) return;
+        if (highlight instanceof City)
+            highlight = [highlight];
 
         const w = gs.canvas.width - gs.dialogBoxPadding * 2;
         const h = gs.canvas.height - gs.dialogBoxPadding * 2;
-        const x = gs.dialogBoxPadding + w * dest.x;
-        const y = gs.dialogBoxPadding + h * dest.y;
 
-        gs.ctx.fillStyle = "black";
-        gs.ctx.fillRect(x - 2, y - 2, 11, 11);
-        gs.ctx.fillStyle = "skyblue";
-        gs.ctx.fillRect(x, y, 7, 7);
+        highlight.forEach(c => {
+            const x = gs.dialogBoxPadding + w * c.x;
+            const y = gs.dialogBoxPadding + h * c.y;
+
+            gs.ctx.beginPath();
+            gs.ctx.fillStyle = "black";
+            gs.ctx.arc(x, y, 4, 0, 2 * Math.PI, false);
+            gs.ctx.fill();
+
+            gs.ctx.beginPath();
+            gs.ctx.arc(x, y, 3, 0, 2 * Math.PI, false);
+            gs.ctx.fillStyle = "skyblue";
+            gs.ctx.fill();
+        });
     }
 }
 
@@ -57,3 +67,14 @@ export class City {
         this.y = y;
     }
 }
+
+export const constantinople = new City("Constantinople", 0.220, 0.379);
+export const cairo = new City("Cairo", 0.233, 0.478);
+export const baghdad = new City("Baghdad", 0.304, 0.445);
+export const tehran = new City("Tehran", 0.344, 0.425);
+export const bukhara = new City("Bukhara", 0.445, 0.425);
+export const samarkand = new City("Samarkand", 0.460, 0.426);
+export const delhi = new City("Delhi", 0.504, 0.502);
+export const beijing = new City("Beijing", 0.702, 0.375);
+export const shanghai = new City("Shanghai", 0.743, 0.436);
+

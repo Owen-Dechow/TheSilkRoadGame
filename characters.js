@@ -1,11 +1,12 @@
 // @ts-check
 
 import { City } from "./map.js";
+import { Good } from "./goods.js";
 
 export class Character {
     /**
      * @param {string} title
-     * @param {string[]} products
+     * @param {Good[]} products
      * @param {string} productExplanation
      * @param {City[]} stops
      * @param {number} distance
@@ -16,7 +17,7 @@ export class Character {
         /** @type {string} */
         this.title = title;
 
-        /** @type {string[]} */
+        /** @type {Good[]} */
         this.products = products;
 
         /** @type {string} */
@@ -39,13 +40,15 @@ export class Character {
     }
 
     getProducts() {
-        if (this.products.length == 1)
-            return this.products[0];
+        const products = this.products.map(p => p.name);
 
-        if (this.products.length == 2)
-            return this.products.join(" & ");
+        if (products.length == 1)
+            return products[0];
 
-        return this.products.slice(0, -1).join(", ") + ", & " + this.products[this.products.length - 1];
+        if (products.length == 2)
+            return products.join(" & ");
+
+        return products.slice(0, -1).join(", ") + ", & " + products[products.length - 1];
     }
 
     getTravelList() {

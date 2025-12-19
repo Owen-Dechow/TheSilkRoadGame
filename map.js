@@ -2,7 +2,7 @@
 
 import { GameScreen } from "./gameScreen.js";
 
-export class Map {
+export class GameMap {
     /**
      * @param {HTMLImageElement} img
      * @param {City[]} cities

@@ -12,8 +12,9 @@ export class Character {
      * @param {number} distance
      * @param {string} travelDescription
      * @param {string} story
+     * @param {number} carryingCapacity
      */
-    constructor(title, products, productExplanation, stops, distance, travelDescription, story) {
+    constructor(title, products, productExplanation, stops, distance, travelDescription, story, carryingCapacity) {
         /** @type {string} */
         this.title = title;
 
@@ -37,6 +38,12 @@ export class Character {
 
         /** @type {string} */
         this.name = "";
+
+        /** @type {Map<Good, number>} */
+        this.inventory = new Map();
+
+        /** @type {number} */
+        this.carryingCapacity = carryingCapacity;
     }
 
     getProducts() {
@@ -53,5 +60,11 @@ export class Character {
 
     getTravelList() {
         return this.stops.map(c => c.name).join("-");
+    }
+
+    getWeightCarrying() {
+        let sum = 0;
+        this.inventory.forEach((v, k) => sum += v * k.weight);
+        return sum;
     }
 }

@@ -98,7 +98,7 @@ export class GameScreen {
 
         const tm = this.ctx.measureText("ljyIY");
         const textHeight = tm.actualBoundingBoxAscent + tm.actualBoundingBoxDescent;
-        const textSplit = text.split(" ").flatMap(e => e.split(/(\n)/));
+        const textSplit = text.replace("\t", "\xA0\xA0\xA0\xA0").split(" ").flatMap(e => e.split(/(\n)/));
         const maxWidth = settings.maxWidth || Infinity;
 
         let txt = "";
@@ -143,7 +143,7 @@ export class GameScreen {
     }
 
     /**
-     * @param {string} title
+     * @param {string | null} title
      * @param {string[] | string} text
      */
     async dialog(title, text) {
@@ -153,7 +153,12 @@ export class GameScreen {
         for (const e of text) {
             this.drawDialogBox();
 
-            let y = this.drawDialogTitle(title);
+            let y;
+            if (title)
+                y = this.drawDialogTitle(title);
+            else
+                y = this.dialogTextPaddingY;
+
             const textSettings = this.dialogTextSettings();
             this.drawText(e, this.dialogTextPaddingX, y, textSettings);
 
@@ -169,7 +174,7 @@ export class GameScreen {
             size: 18,
             textAlign: "start",
             textBaseline: "alphabetic",
-            maxWidth: this.canvas.width - this.dialogTextPaddingX * 2
+            maxWidth: this.canvas.width - this.dialogTextPaddingX * 2 - 10
         };
 
         return textSettings;
@@ -205,6 +210,7 @@ export class GameScreen {
     /**
      * @param {string} prompt
      * @param {string[]} opts
+     * @returns {Promise<[number, string]>}
      */
     async selectMenu(prompt, opts) {
         let selectedIdx = 0;
@@ -213,14 +219,25 @@ export class GameScreen {
             this.drawDialogBox();
 
             let y = this.drawDialogTitle(prompt);
+            const originalY = y;
 
             const textSettings = this.dialogTextSettings();
 
+            if (opts.length > 10 && textSettings.maxWidth)
+                textSettings.maxWidth /= 2;
+
+
+            let x = this.dialogTextPaddingX + 20;
             opts.forEach((opt, idx) => {
-                const ny = this.drawText(`${idx + 1}. ${opt}`, this.dialogTextPaddingX + 20, y, textSettings);
+                if (idx == 10) {
+                    x += textSettings.maxWidth || Infinity;
+                    y = originalY;
+                }
+
+                const ny = this.drawText(`${idx + 1}. ${opt}`, x, y, textSettings);
 
                 if (idx == selectedIdx) {
-                    this.drawText(this.pointer, this.dialogTextPaddingX, y, textSettings);
+                    this.drawText(this.pointer, x - 20, y, textSettings);
                 }
 
                 y = ny;
